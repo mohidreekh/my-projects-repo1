@@ -1,6 +1,4 @@
 #include<iostream>
-#include<stdio.h>
-#include<stdlib.h>
 using namespace std;
 
 struct stGameInfo
@@ -170,16 +168,27 @@ short player2Choice()
 
 
 
+void saveInfo(stGameInfo& gameInfo, short player,short computer)
+{
+	stGameInfo roundResult;
+	roundResult = theWinnerInRound(player, computer);
+
+	printWinnerName_InRound(roundResult);
 
 
-void roundByRoundMood(stGameInfo &gameInfo, bool secondPlayer = true)
+	gameInfo.playerWinTimes += roundResult.playerWinTimes;
+	gameInfo.computerWinTimes += roundResult.computerWinTimes;
+	gameInfo.drowTimes += roundResult.drowTimes;
+	gameInfo.roundCounter++;
+}
+
+void roundByRoundMood(stGameInfo& gameInfo, bool secondPlayer = true)
 {
 
 	resetScreen();
 
 	char yn;
 	short player, computer;
-	stGameInfo roundResult;
 
 	do {
 
@@ -193,22 +202,14 @@ void roundByRoundMood(stGameInfo &gameInfo, bool secondPlayer = true)
 			static_cast<enChoice>(computer);
 		}
 
-		else 
+		else
 		{
 			computer = randomNumber(1, 3);
 			static_cast<enChoice>(computer);
 		}
 
 
-		roundResult = theWinnerInRound(player, computer);
-
-		printWinnerName_InRound(roundResult);
-
-
-		gameInfo.playerWinTimes += roundResult.playerWinTimes;
-		gameInfo.computerWinTimes += roundResult.computerWinTimes;
-		gameInfo.drowTimes += roundResult.drowTimes;
-		gameInfo.roundCounter++;
+		saveInfo(gameInfo, player, computer);
 
 
 		cout << "Do you want play more ??.. Y/N" << endl;
@@ -217,15 +218,12 @@ void roundByRoundMood(stGameInfo &gameInfo, bool secondPlayer = true)
 	} while (yn == 'Y' || yn == 'y');
 }
 
-void numberOfRoundsMood(stGameInfo &gameInfo, bool secondPlayer = true)
+void numberOfRoundsMood(stGameInfo& gameInfo, bool secondPlayer = true)
 {
 
 	resetScreen();
 
 	short player, computer;
-	stGameInfo roundResult;
-
-
 	short  num;
 	cout << "Enter the number of round you want play" << endl;
 	cin >> num;
@@ -249,17 +247,7 @@ void numberOfRoundsMood(stGameInfo &gameInfo, bool secondPlayer = true)
 			static_cast<enChoice>(computer);
 		}
 
-
-		roundResult = theWinnerInRound(player, computer);
-
-		printWinnerName_InRound(roundResult);
-
-
-		gameInfo.playerWinTimes += roundResult.playerWinTimes;
-		gameInfo.computerWinTimes += roundResult.computerWinTimes;
-		gameInfo.drowTimes += roundResult.drowTimes;
-		gameInfo.roundCounter++;
-
+		saveInfo(gameInfo, player, computer);
 	}
 }
 
@@ -276,14 +264,14 @@ void playGame(stGameInfo& gameInfo)
 	cin >> mood;
 
 	cout << "\n";
-	
+
 
 	if (mood == 1)
 	{
 		roundByRoundMood(gameInfo, opponent);
 	}
 
-	else if(mood == 2)
+	else if (mood == 2)
 	{
 		numberOfRoundsMood(gameInfo, opponent);
 	}
@@ -294,12 +282,12 @@ void playGame(stGameInfo& gameInfo)
 
 		cout << "Error" << endl;
 	}
-	
+
 
 
 	gameOver(gameInfo);
 
-	
+
 	cout << "\n\n";
 	playGame(gameInfo);
 
